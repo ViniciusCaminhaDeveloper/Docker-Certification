@@ -18,18 +18,35 @@ The --advertise-addr flag configures the manager node to publish its address as 
 
 The output includes the commands to join new nodes to the swarm. Nodes will join as managers or workers depending on the value for the --token flag.
 
-
-
-
 * State the differences between running a container vs running a service<br>
-```docker 
-docker ps
 
+```docker 
+docker container run -d --name nginx nginx
+docker container ls
+
+docker service create --name nginx-service --replicas=3 nginx
+docker service ls
+docker service ps nginx-service
 ```
+In short: Docker service is used mostly when you configured the master node with Docker swarm so that docker containers will run in a distributed environment and it can be easily managed.
+
+Docker run: The docker run command first creates a writeable container layer over the specified image, and then starts it using the specified command.
+
 *Demonstrate steps to lock a swarm cluster<br>
 ```docker 
-docker ps
+docker swarm init --autolock
+systemctl restart docker
+#Check if locked - the command bellow will return a lock exception
+docker service ls
+docker swarm unlock
+```
 
+```docker
+#For update a existing swarm with autolock true or false
+docker swarm update --autolock=true
+
+# For generate a new key
+docker swarm unlock-key --rotate
 ```
 * Extend the instructions to run individual containers into running services under swarm<br>
 ```docker 
